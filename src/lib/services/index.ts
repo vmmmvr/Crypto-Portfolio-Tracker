@@ -1,3 +1,11 @@
-import { fetchCoinsHttpRequest } from "./coins.service";
+import {
+  fetchCoinsHttpRequest,
+  fetchCoinHistoryDataHttpRequest,
+  fetchCoinInfoHttpRequest,
+} from "./coins.service";
 
-export { fetchCoinsHttpRequest };
+export {
+  fetchCoinsHttpRequest,
+  fetchCoinHistoryDataHttpRequest,
+  fetchCoinInfoHttpRequest,
+};

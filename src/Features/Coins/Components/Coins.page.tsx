@@ -1,112 +1,54 @@
-import React, { useEffect } from "react";
+import  { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCoinsRequest } from "../redux/coins.slice";
 import { CustomButton } from "../../../lib/Components";
-import { Plus } from 'react-feather';
+import {  Edit2, Plus } from 'react-feather';
 import { Typography } from "@material-tailwind/react";
+import { Link } from "react-router-dom";
+import { fetchLocalCoins, InitialStateType } from "../redux/coins.slice";
+import EmptyComponent from "../../../lib/Components/EmptyComponent/EmptyComponent";
+import { Coin } from "../../../lib/interfaces/coins";
+import { missingPorperties } from "../../../lib/utils/utils";
 
 export default function CoinsPage() {
     const dispatch = useDispatch();
-    const { coins, loading, error } = useSelector((state) => state.coins);
-    const coinsList = [
-        {
-            title: "Bitcoin (BTC)",
-            quantity: "2.2",
-            price: "$62,000",
-            total: "$150,000",
-        },
-        {
-            title: "Etherium (ETH)",
-            quantity: "2.2",
-            price: "$2,600",
-            total: "$4,000",
-        },
-        {
-            title: "AVALANCHE (AVAX)",
-            quantity: "12342",
-            price: "$28.00",
-            total: "$534,000",
-        },
-        {
-            title: "Bitcoin (BTC)",
-            quantity: "2.2",
-            price: "$62,000",
-            total: "$150,000",
-        },
-        {
-            title: "Bitcoin (BTC)",
-            quantity: "2.2",
-            price: "$62,000",
-            total: "$150,000",
-        },
-        {
-            title: "Etherium (ETH)",
-            quantity: "2.2",
-            price: "$2,600",
-            total: "$4,000",
-        },
-        {
-            title: "AVALANCHE (AVAX)",
-            quantity: "12342",
-            price: "$28.00",
-            total: "$534,000",
-        },
-        {
-            title: "Bitcoin (BTC)",
-            quantity: "2.2",
-            price: "$62,000",
-            total: "$150,000",
-        },
-        {
-            title: "Bitcoin (BTC)",
-            quantity: "2.2",
-            price: "$62,000",
-            total: "$150,000",
-        },
-        {
-            title: "Etherium (ETH)",
-            quantity: "2.2",
-            price: "$2,600",
-            total: "$4,000",
-        },
-        {
-            title: "AVALANCHE (AVAX)",
-            quantity: "12342",
-            price: "$28.00",
-            total: "$534,000",
-        },
-        {
-            title: "Bitcoin (BTC)",
-            quantity: "2.2",
-            price: "$62,000",
-            total: "$150,000",
-        },
-    ]
+    const { coins } = useSelector((state:any) => state.coins as InitialStateType);
+
+
     useEffect(() => {
-        coins === null && dispatch(fetchCoinsRequest());  // Trigger the saga and state updates
+        coins === null && dispatch(fetchLocalCoins());  // Trigger the saga and state updates
     }, [coins, dispatch]);
     return <div className="min-h-full w-full p-4 md:p-6 lg:p-10 gap-5 flex flex-col">
         <div className=" flex sm:flex-row flex-col gap-5 w-full sm:justify-between sm:items-center ">
-            <Typography variant="h6" className="text-md font-medium text-primary-text">Crypto Portfolio</Typography>
-            <CustomButton onClick={() => console.log("add")} classes=""><Plus size={18} /> Add New Holding</CustomButton>
+            <Typography {...missingPorperties} variant="h6" className="text-md font-medium text-primary-text">Crypto Portfolio</Typography>
+            <Link to={"/add-holding"}><CustomButton classes=""><Plus size={18} /> Add New Holding</CustomButton></Link>
         </div>
         <div>
-           {
-            coinsList.map(coin => (
-                <div  key={coin.title} className="bg-primary-50 p-3 my-5 flex flex-col gap-2 rounded-lg hover:bg-primary-200 cursor-pointer transition-all duration-300 transform hover:scale-105">
-                <Typography variant="h4" className="text-primary-main text-lg sm:text-2xl">
-                    {coin.title}
-                </Typography>
-                <div className="flex flex-col gap-1">
-                    <span className="text-sm text-gray-600 font-medium">Quantity : ${coin.quantity}</span>
-                    <span className="text-sm text-gray-600 font-medium">
-                        Current Price : {coin.price}
-                    </span>
-                    <span className="text-sm text-gray-600 font-medium">Total : {coin.total}</span>
-                </div>
-            </div>
-            ))
-           }
+            {
+                !coins || coins.length === 0 ? (
+                    <EmptyComponent />
+                ) : coins.map((coin: Coin) => (
+                    <Link to={`/${coin.symbol}`}>
+                        <div key={coin.id} className="bg-primary-50 p-3 my-5 flex flex-col gap-2 rounded-lg hover:bg-primary-200 cursor-pointer transition-all duration-300 transform hover:scale-105">
+                            <div className="flex items-start justify-between text-primary-text">
+                                <Typography {...missingPorperties} variant="h4" className="text-primary-main text-lg sm:text-2xl">
+                                    {coin.name} ({coin.symbol})
+                                </Typography>
+                                <div>
+                                    <span className="text-primary-text text-xl font-medium">${coin.price}</span>
+                                </div>
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <span className="text-sm text-gray-600 font-medium">Quantity : {coin.quantity}</span>
+
+
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <span className="text-sm text-gray-600 font-medium">Total : ${coin.total.toFixed(2)}</span>  <Link to={`/edit-holding/${coin.symbol}`}><Edit2 className="text-primary-600" size={16} /></Link>
+                            </div>
+                        </div>
+                    </Link>
+                ))
+            }
 
         </div>
     </div>;

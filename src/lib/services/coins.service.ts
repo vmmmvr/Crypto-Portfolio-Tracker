@@ -1,11 +1,29 @@
 import axios, { AxiosResponse } from "axios";
-import { FetchCoinsApiRespose } from "../interfaces/coins";
+
+const API_KEY = import.meta.env.VITE_API_KEY;
+// API call to fetch coins
+export function fetchCoinsHttpRequest(params: {
+  symbol: string;
+}): Promise<AxiosResponse<any>> {
+  return axios.get(
+    `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${params.symbol},&tsyms=USD&api_key=${API_KEY}`
+  ); // Replace with actual API
+}
 
 // API call to fetch coins
-export function fetchCoinsHttpRequest(): Promise<
-  AxiosResponse<FetchCoinsApiRespose>
-> {
+export function fetchCoinInfoHttpRequest(params: {
+  symbol: string;
+}): Promise<AxiosResponse<any>> {
   return axios.get(
-    "https://min-api.cryptocompare.com/data/pricemulti?fsyms=BTC,ETH&tsyms=USD,EUR&api_key=e5e96ffb80f73ade4b92ffc57f24bf23fd99c9480938c12adb70fb5b2f5756c1"
+    `https://min-api.cryptocompare.com/data/coin/generalinfo?fsyms=${params.symbol},&tsym=USD&api_key=${API_KEY}`
+  ); // Replace with actual API
+}
+
+// API call to fetch coins
+export function fetchCoinHistoryDataHttpRequest(params: {
+  symbol: string;
+}): Promise<AxiosResponse<any>> {
+  return axios.get(
+    ` https://min-api.cryptocompare.com/data/v2/histoday?fsym=${params.symbol}&tsym=USD&limit=30&api_key=${API_KEY}`
   ); // Replace with actual API
 }
